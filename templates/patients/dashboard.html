@@ -1,0 +1,178 @@
+{% extends 'bootstrap/base.html' %}
+
+{% block html %}
+  {% block head %}
+    {% block title %}
+      <title>Smart Office IoT application</title>
+    {% endblock %}
+
+    {% block styles %}
+      {{ super() }}
+      <link rel="stylesheet" href="{{url_for('.static', filename='style.css')}}">
+        <link type="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datetimepicker/4.17.47/css/bootstrap-datetimepicker.min.css">
+        <link rel="stylesheet" href="//code.jquery.com/ui/1.11.4/themes/smoothness/jquery-ui.css">
+    {% endblock %}
+  {% endblock %}
+
+  {% block body %}
+    {% block navbar %}
+      <nav class="navbar navbar-fixed-top">
+          <div class="container-fluid">
+              <div class="navbar-header">
+                  <a class="navbar-brand" href="#">Smart Office</a>
+              </div>
+              <ul class="nav navbar-nav">
+                  <li><a href="/doctors/pick_doctor">Doctors</a></li>
+                  <li><a href="/patients/pick_patient">Patients</a></li>
+                  <li><a href="/clerks/home">Clerks</a></li>
+              </ul>
+          </div>
+      </nav>
+    {% endblock %}
+
+    {% block content %}
+
+        <center>
+            <div class="jumbotron">
+                <h1>Smart Office</h1>
+            </div>
+        </center>
+
+        <div class="container col-md-2">
+            <div class="row">
+                <div class="">
+                    <div class="thumbnail">
+                    <!-- <img alt="100%x200" data-src="holder.js/100%x200" src="data:image/svg+xml;base64,PD94bWwgdmVyc2lvbj0iMS4wIiBlbmNvZGluZz0iVVRGLTgiIHN0YW5kYWxvbmU9InllcyI/PjxzdmcgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIiB3aWR0aD0iMjQyIiBoZWlnaHQ9IjIwMCIgdmlld0JveD0iMCAwIDI0MiAyMDAiIHByZXNlcnZlQXNwZWN0UmF0aW89Im5vbmUiPjwhLS0KU291cmNlIFVSTDogaG9sZGVyLmpzLzEwMCV4MjAwCkNyZWF0ZWQgd2l0aCBIb2xkZXIuanMgMi42LjAuCkxlYXJuIG1vcmUgYXQgaHR0cDovL2hvbGRlcmpzLmNvbQooYykgMjAxMi0yMDE1IEl2YW4gTWFsb3BpbnNreSAtIGh0dHA6Ly9pbXNreS5jbwotLT48ZGVmcz48c3R5bGUgdHlwZT0idGV4dC9jc3MiPjwhW0NEQVRBWyNob2xkZXJfMTY1ZWM3MDllNDIgdGV4dCB7IGZpbGw6I0FBQUFBQTtmb250LXdlaWdodDpib2xkO2ZvbnQtZmFtaWx5OkFyaWFsLCBIZWx2ZXRpY2EsIE9wZW4gU2Fucywgc2Fucy1zZXJpZiwgbW9ub3NwYWNlO2ZvbnQtc2l6ZToxMnB0IH0gXV0+PC9zdHlsZT48L2RlZnM+PGcgaWQ9ImhvbGRlcl8xNjVlYzcwOWU0MiI+PHJlY3Qgd2lkdGg9IjI0MiIgaGVpZ2h0PSIyMDAiIGZpbGw9IiNFRUVFRUUiLz48Zz48dGV4dCB4PSI4OS44NTkzNzUiIHk9IjEwNS40Ij4yNDJ4MjAwPC90ZXh0PjwvZz48L2c+PC9zdmc+" data-holder-rendered="true" style="height: 200px; width: 100%; display: block;"> -->
+                    <div class="caption">
+                        <h3>{{ patient_details.first_name }} {{ patient_details.last_name }}</h3>
+                        <p><b>Age:</b> {{ patient_details.age }}</p>
+                        <p><b>Email:</b> {{ patient_details.email }}</p>
+                    </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="container col-md-10">
+            <div class="list-group">
+                <div class="panel panel-info">
+                    <div class="panel-heading">
+                        <h3 class="panel-title"><b>Dashboard</b></h3>
+                    </div>
+                    <div class="panel-body">
+                        <div>
+                            <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#createNewAppointment">
+                              Create New Appointment
+                            </button>
+                        </div>
+
+                        <!-- Modal -->
+                        <div class="modal fade" id="createNewAppointment" tabindex="-1" role="dialog" aria-labelledby="createNewAppointmentLabel" aria-hidden="true">
+                          <div class="modal-dialog" role="document">
+                            <div class="modal-content">
+                              <div class="modal-header">
+                                <h5 style="display:inline-block" class="modal-title" id="createNewAppointmentLabel">Create an Appointment</h5>
+                                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                  <span aria-hidden="true">&times;</span>
+                                </button>
+                              </div>
+                                <form action="/create_patient_appointment" method="POST">
+                                      <div class="modal-body">
+                                            <input type="hidden" class="form-control" name="patient_email" value="{{ patient_details.email }}">
+                                            <label>Choose a Doctor</label>
+                                            <select class="form-control" name="doctor_email" required>
+                                                {% for value_doctor_list in doctors_list %}
+                                                    <option name="doctor_email" value="{{ value_doctor_list.email }}">{{ value_doctor_list.name }}</option>
+                                                {% endfor %}
+                                            </select>
+                                            <label>Pick a Date</label>
+                                            <input type="text" name="date" placeholder="YYYY-MM-DD" class="form-control dp" value="" required/>
+                                            <label>Pick a Time</label>
+                                            <input type="time" name="time" class="form-control" value="" required/>
+                                      </div>
+                                      <div class="modal-footer">
+                                        <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                                        <button type="submit" class="btn btn-primary">Create Appointment</button>
+                                      </div>
+                                </form>
+                            </div>
+                          </div>
+                        </div>
+
+                        <!--Test starts here-->
+                        <div style="margin-top:10px" class="list-group col-md-6">
+                            <a href="#" class="list-group-item list-group-item-success">
+                                <b>Appointments made for Doctor(s)</b>
+                            </a>
+                            {% if patient_appointments_list %}
+                                {% for value_appointments_list in patient_appointments_list %}
+
+                                        <li style="display:flow-root" class="list-group-item"><b>Date:</b> {{ value_appointments_list.event_date }} <b>Time:</b> {{ value_appointments_list.event_time }}
+                                            <!--<button style="float:right" type="button" class="btn btn-danger" data-toggle="modal" data-target="#testit{{value_appointments_list.id}}">Delete</button>-->
+                                            <a href="button" style="float:right" class="btn btn-danger btn-md" data-toggle="modal" data-target="#testit{{value_appointments_list.id}}">
+                                                <span class="glyphicon glyphicon-trash"></span> Delete
+                                            </a>
+                                        </li>
+
+                                        <div class="modal fade" id="testit{{value_appointments_list.id}}" tabindex="-1" role="dialog" aria-labelledby="testitTitle" aria-hidden="true">
+                                          <div class="modal-dialog modal-dialog-centered" role="document">
+                                            <div class="modal-content">
+                                              <div class="modal-header">
+                                                <h5 style="display:inline-block" class="modal-title" id="testitTitle">Are you sure you want to delete the Appointment?</h5>
+                                                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                                  <span aria-hidden="true">&times;</span>
+                                                </button>
+                                              </div>
+                                              <div class="modal-footer">
+                                                  <form action="/delete_patient_appointment" method="POST">
+                                                      <input type="hidden" class="form-control" name="appointment_id" value="{{ value_appointments_list.id }}"/>
+                                                      <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                                                      <button type="submit" class="btn btn-danger">Delete Appointment</button>
+                                                  </form>
+                                              </div>
+                                            </div>
+                                          </div>
+                                        </div> <!-- End Modal foe Deleting the Appointment -->
+
+                                {% endfor %}
+                            {% else %}
+                                <li style="display:flow-root" class="list-group-item">
+                                    <strong><center>No Appointments found</center></strong>
+                                </li>
+                            {% endif %}
+                        </div>
+
+                        <!--List group for viewing the medical records by doctor-->
+                            <div style="margin-top:10px" class="list-group col-md-6">
+                                <a href="#" class="list-group-item list-group-item-warning">
+                                    <b>Medical Records</b>
+                                </a>
+                                {% if medical_records %}
+                                    {% for value_medical_records in medical_records %}
+                                        <li class="list-group-item">{{ value_medical_records.description }}</li>
+                                    {% endfor %}
+                                {% else %}
+                                <li class="list-group-item"><strong><center>No Medical records found</center></strong></li>
+                                {% endif %}
+                            </div>
+
+                    </div> <!-- Ending the panel body here-->
+                </div>
+            </div>
+        </div>
+
+    {% endblock %}
+
+{% block scripts %}
+    {{ super() }}
+	<script src="//code.jquery.com/jquery-1.10.2.js"></script>
+	<script src="//code.jquery.com/ui/1.11.4/jquery-ui.js"></script>
+    <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.18.1/moment.min.js"></script>
+    <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datetimepicker/4.17.47/js/bootstrap-datetimepicker.min.js"></script>
+    <script type="text/javascript">
+      {{ datepicker.loader() }} {# to load jQuery-ui #}
+      {{ datepicker.picker(id=".dp") }}
+    </script>
+{% endblock %}
+
+  {% endblock %}
+{% endblock %}

@@ -1,0 +1,55 @@
+{% extends 'bootstrap/base.html' %}
+
+{% block html %}
+  {% block head %}
+    {% block title %}
+      <title>Smart Office IoT application</title>
+    {% endblock %}
+
+    {% block styles %}
+      {{ super() }}
+      <link rel="stylesheet" href="{{url_for('.static', filename='style.css')}}">
+    {% endblock %}
+  {% endblock %}
+
+  {% block body %}
+    {% block navbar %}
+      <nav class="navbar navbar-fixed-top">
+          <div class="container-fluid">
+              <div class="navbar-header">
+                  <a class="navbar-brand" href="#">Smart Office</a>
+              </div>
+              <ul class="nav navbar-nav">
+                  <li><a href="/doctors/pick_doctor">Doctors</a></li>
+                  <li><a href="/patients/pick_patient">Patients</a></li>
+                  <li><a href="/clerks/home">Clerks</a></li>
+              </ul>
+          </div>
+      </nav>
+    {% endblock %}
+
+    {% block content %}
+        <center>
+            <div class="jumbotron">
+                <h1>Smart Office</h1>
+            </div>
+        </center>
+        <div class="">
+            <center>
+                <div class="alert alert-danger">
+                    <strong>Availability Failed :( It seems like you already set the Availability for this time</strong>
+                </div>
+
+            </center>
+
+        </div>
+
+    {% endblock %}
+
+  {% block scripts %}
+    {{ super() }}
+
+  {% endblock %}
+
+  {% endblock %}
+{% endblock %}

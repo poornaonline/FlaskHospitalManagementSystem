@@ -1,0 +1,183 @@
+{% extends 'bootstrap/base.html' %}
+
+{% block html %}
+  {% block head %}
+    {% block title %}
+      <title>Smart Office IoT application</title>
+    {% endblock %}
+
+    {% block styles %}
+      {{ super() }}
+      <link rel="stylesheet" href="{{url_for('.static', filename='style.css')}}">
+        <link type="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datetimepicker/4.17.47/css/bootstrap-datetimepicker.min.css">
+        <link rel="stylesheet" href="//code.jquery.com/ui/1.11.4/themes/smoothness/jquery-ui.css">
+    {% endblock %}
+  {% endblock %}
+
+  {% block body %}
+    {% block navbar %}
+      <nav class="navbar navbar-fixed-top">
+          <div class="container-fluid">
+              <div class="navbar-header">
+                  <a class="navbar-brand" href="#">Smart Office</a>
+              </div>
+              <ul class="nav navbar-nav">
+                  <li><a href="/doctors/pick_doctor">Doctors</a></li>
+                  <li><a href="/patients/pick_patient">Patients</a></li>
+                  <li><a href="/clerks/home">Clerks</a></li>
+              </ul>
+          </div>
+      </nav>
+    {% endblock %}
+
+    {% block content %}
+
+        <center>
+            <div class="jumbotron">
+                <h1>Smart Office</h1>
+            </div>
+        </center>
+
+        <div class="container col-md-12">
+            <div class="list-group">
+                <div class="panel panel-info">
+                    <div class="panel-heading">
+                        <h3 class="panel-title"><b>Medical Clerk</b></h3>
+                    </div>
+                    <div class="panel-body">
+                        <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#createNewAppointment">
+                          Create New Appointment
+                        </button>
+                        <a href="/analysis" class="btn btn-info">Analysis</a>
+
+                        <br>
+                        <!-- Modal -->
+                        <div class="modal fade" id="createNewAppointment" tabindex="-1" role="dialog" aria-labelledby="createNewAppointmentLabel" aria-hidden="true">
+                          <div class="modal-dialog" role="document">
+                            <div class="modal-content">
+                              <div class="modal-header">
+                                <h5 style="display:inline-block" class="modal-title" id="createNewAppointmentLabel">Create an Appointment</h5>
+                                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                  <span aria-hidden="true">&times;</span>
+                                </button>
+                              </div>
+                                <form action="/clerk/create_patient_appointment" method="POST">
+                                      <div class="modal-body">
+                                            <label>Choose a Patient</label>
+                                            <select class="form-control" name="patient_email">
+                                                {% for patient in patients %}
+                                                    <option name="patient_email" value="{{ patient.email }}">{{ patient.first_name }} {{ patient.last_name }}</option>
+                                                {% endfor %}
+                                            </select>
+                                            <label>Choose a Doctor</label>
+                                            <select class="form-control" name="doctor_email">
+                                                {% for doctor in doctors %}
+                                                    <option name="doctor_email" value="{{ doctor.doctor_email }}">{{ doctor.doctor_name }}</option>
+                                                {% endfor %}
+                                            </select>
+                                            <label>Pick a Date</label>
+                                            <input type="text" name="date" placeholder="YYYY-MM-DD" class="form-control dp" value=""/>
+                                            <label>Pick a Time</label>
+                                            <input type="time" name="time" class="form-control" value=""/>
+                                      </div>
+                                      <div class="modal-footer">
+                                        <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                                        <button type="submit" class="btn btn-primary">Create Appointment</button>
+                                      </div>
+                                </form>
+                            </div>
+                          </div>
+                        </div>
+
+                        <!--List of Appointments by a patient associated with a particular Doctor-->
+                        <div class="container col-md-12">
+                            {% for doctor in doctors %}
+                                <div style="margin-top:10px">
+                                    <a href="#" class="list-group-item list-group-item-success">
+                                        <b>Appointments for Dr. {{ doctor.doctor_name }}</b>
+                                    </a>
+                                    {% if doctor.appointments_with_patient %}
+                                        {% for appointment in doctor.appointments_with_patient %}
+                                            <li style="display:flow-root" class="list-group-item">
+                                                <div class="col-md-9">
+                                                    <b>Patient Name:</b> {{ appointment.patient.first_name }} {{ appointment.patient.last_name }}, <b>Age:</b> {{ appointment.patient.age }} &nbsp;&nbsp;&nbsp;<b>Appointment ID:</b> {{ appointment.id }} <b>Appointment Date:</b> {{ appointment.event_date }} <b>Appointment Time:</b> {{ appointment.event_time }}
+
+                                                    {% if appointment.patient_visited %}
+                                                        <p><b style="padding-right:40px">Patient Checked in</b></p>
+                                                    {% else %}
+                                                        <p><b style="padding-right:40px">Patient not Checked in</b></p>
+                                                    {% endif %}
+                                                </div>
+
+                                                <div class="col-md-3">
+                                                    <!--For Deleting an Appointment-->
+                                                    <a href="button" style="float:right" class="btn btn-danger btn-md" data-toggle="modal" data-target="#deleteRecord{{ appointment.event_id }}">
+                                                        <span class="glyphicon glyphicon-trash"></span> Delete
+                                                    </a>
+
+                                                    {% if appointment.patient_visited %}
+
+                                                    {% else %}
+                                                        <form action="/patient/mark_patient_visited" method="POST">
+                                                            <input type="hidden" name="patient_email" value="{{ appointment.patient.email }}">
+                                                            <input type="hidden" name="doctor_email" value="{{ doctor.doctor_email }}">
+                                                            <input type="hidden" name="appointment_id" value="{{ appointment.id }}">
+
+                                                            <button type="submit" style="margin-right:10px;float:right" class="btn btn-warning">Check In</button>
+                                                        </form>
+                                                    {% endif %}
+
+
+                                                    <!-- Modal -->
+                                                    <div class="modal fade" id="deleteRecord{{ appointment.event_id }}" tabindex="-1" role="dialog" aria-labelledby="deleteRecord{{ appointment.event_id }}Title" aria-hidden="true">
+                                                      <div class="modal-dialog" role="document">
+                                                        <div class="modal-content">
+                                                          <div class="modal-header">
+                                                            <h5 style="display:inline-block" class="modal-title" id="deleteRecord{{ appointment.event_id }}Title">Are you sure you want to delete this record?</h5>
+                                                            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                                              <span aria-hidden="true">&times;</span>
+                                                            </button>
+                                                            </div>
+                                                          <div class="modal-footer">
+                                                              <form action="/clerk/delete_appointment" method="POST">
+                                                                  <input type="hidden" name="appointment_id" value="{{ appointment.id }}">
+                                                                  <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                                                                  <button type="submit" class="btn btn-danger">Delete Record</button>
+                                                              </form>
+                                                          </div>
+                                                        </div>
+                                                      </div>
+                                                    </div>
+                                                </div>
+                                            </li>
+                                        {% endfor %}
+                                    {% else %}
+                                        <li style="display:flow-root" class="list-group-item">
+                                            <strong><center>No Appointments found</center></strong>
+                                        </li>
+                                    {% endif %}
+                                </div>
+                            {% endfor %}
+                        </div>
+
+                    </div> <!-- Ending the panel body here-->
+                </div>
+            </div>
+        </div>
+
+    {% endblock %}
+
+{% block scripts %}
+    {{ super() }}
+	<script src="//code.jquery.com/jquery-1.10.2.js"></script>
+	<script src="//code.jquery.com/ui/1.11.4/jquery-ui.js"></script>
+    <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.18.1/moment.min.js"></script>
+    <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datetimepicker/4.17.47/js/bootstrap-datetimepicker.min.js"></script>
+    <script type="text/javascript">
+      {{ datepicker.loader() }} {# to load jQuery-ui #}
+      {{ datepicker.picker(id=".dp") }}
+    </script>
+{% endblock %}
+
+  {% endblock %}
+{% endblock %}

@@ -1,0 +1,149 @@
+{% extends 'bootstrap/base.html' %}
+
+{% block html %}
+  {% block head %}
+    {% block title %}
+      <title>Smart Office IoT application</title>
+    {% endblock %}
+
+    {% block styles %}
+      {{ super() }}
+      <link rel="stylesheet" href="{{url_for('.static', filename='style.css')}}">
+        <link type="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datetimepicker/4.17.47/css/bootstrap-datetimepicker.min.css">
+        <link rel="stylesheet" href="//code.jquery.com/ui/1.11.4/themes/smoothness/jquery-ui.css">
+    {% endblock %}
+  {% endblock %}
+
+  {% block body %}
+    {% block navbar %}
+      <nav class="navbar navbar-fixed-top">
+          <div class="container-fluid">
+              <div class="navbar-header">
+                  <a class="navbar-brand" href="#">Smart Office</a>
+              </div>
+              <ul class="nav navbar-nav">
+                  <li><a href="/doctors/pick_doctor">Doctors</a></li>
+                  <li><a href="/patients/pick_patient">Patients</a></li>
+                  <li><a href="/clerks/home">Clerks</a></li>
+              </ul>
+          </div>
+      </nav>
+    {% endblock %}
+
+    {% block content %}
+
+        <center>
+            <div class="jumbotron">
+                <h1>Smart Office</h1>
+            </div>
+        </center>
+
+        <div class="container col-md-2">
+            <div class="row">
+                <div class="">
+                    <div class="thumbnail">
+                    <!-- <img alt="100%x200" data-src="holder.js/100%x200" src="data:image/svg+xml;base64,PD94bWwgdmVyc2lvbj0iMS4wIiBlbmNvZGluZz0iVVRGLTgiIHN0YW5kYWxvbmU9InllcyI/PjxzdmcgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIiB3aWR0aD0iMjQyIiBoZWlnaHQ9IjIwMCIgdmlld0JveD0iMCAwIDI0MiAyMDAiIHByZXNlcnZlQXNwZWN0UmF0aW89Im5vbmUiPjwhLS0KU291cmNlIFVSTDogaG9sZGVyLmpzLzEwMCV4MjAwCkNyZWF0ZWQgd2l0aCBIb2xkZXIuanMgMi42LjAuCkxlYXJuIG1vcmUgYXQgaHR0cDovL2hvbGRlcmpzLmNvbQooYykgMjAxMi0yMDE1IEl2YW4gTWFsb3BpbnNreSAtIGh0dHA6Ly9pbXNreS5jbwotLT48ZGVmcz48c3R5bGUgdHlwZT0idGV4dC9jc3MiPjwhW0NEQVRBWyNob2xkZXJfMTY1ZWM3MDllNDIgdGV4dCB7IGZpbGw6I0FBQUFBQTtmb250LXdlaWdodDpib2xkO2ZvbnQtZmFtaWx5OkFyaWFsLCBIZWx2ZXRpY2EsIE9wZW4gU2Fucywgc2Fucy1zZXJpZiwgbW9ub3NwYWNlO2ZvbnQtc2l6ZToxMnB0IH0gXV0+PC9zdHlsZT48L2RlZnM+PGcgaWQ9ImhvbGRlcl8xNjVlYzcwOWU0MiI+PHJlY3Qgd2lkdGg9IjI0MiIgaGVpZ2h0PSIyMDAiIGZpbGw9IiNFRUVFRUUiLz48Zz48dGV4dCB4PSI4OS44NTkzNzUiIHk9IjEwNS40Ij4yNDJ4MjAwPC90ZXh0PjwvZz48L2c+PC9zdmc+" data-holder-rendered="true" style="height: 200px; width: 100%; display: block;"> -->
+                    <div class="caption">
+                        <h3>{{ doctor_details.name }}</h3>
+                        <p>{{ doctor_details.description }}</p>
+                    </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="container col-md-10">
+            <div class="list-group">
+                <div class="panel panel-info">
+                    <div class="panel-heading">
+                        <h3 class="panel-title"><b>Dashboard</b></h3>
+                    </div>
+                    <div class="panel-body">
+                        <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#createNewAvailability">
+                          Add Availability
+                        </button>
+                        <br>
+                        <!-- Modal -->
+                        <div class="modal fade" id="createNewAvailability" tabindex="-1" role="dialog" aria-labelledby="createNewAvailabilityLabel" aria-hidden="true">
+                          <div class="modal-dialog" role="document">
+                            <div class="modal-content">
+                              <div class="modal-header">
+                                <h5 style="display:inline-block" class="modal-title" id="createNewAvailabilityLabel">Add Availability</h5>
+                                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                  <span aria-hidden="true">&times;</span>
+                                </button>
+                              </div>
+                                <form action="/create_new_availability" method="POST">
+                                      <div class="modal-body">
+                                            <input type="hidden" class="form-control" name="doctor_email" value="{{ doctor_details.email }}">
+                                            <label>Pick a Date</label>
+                                            <input type="text" name="date" placeholder="YYYY-MM-DD" class="form-control dp" value=""/>
+                                            <label>Pick a Start Time</label>
+                                            <input type="time" name="start_time" class="form-control" value=""/>
+                                            <label>Pick an End Time</label>
+                                            <input type="time" name="end_time" class="form-control" value=""/>
+                                      </div>
+                                      <div class="modal-footer">
+                                        <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                                        <button type="submit" class="btn btn-primary">Add Availability</button>
+                                      </div>
+                                </form>
+                            </div>
+                          </div>
+                        </div>
+
+                        <div style="margin-top:10px" class="alert alert-warning">
+                            <center>
+                                <h2><strong>Doctors Availability Calendar</strong></h2>
+                                <div>
+                                    <iframe src="https://calendar.google.com/calendar/embed?src={{ doctor_details.availabilityCalendarId }}&ctz=Australia%2FMelbourne" style="border: 0" width="800" height="600" frameborder="0" scrolling="no"></iframe>
+                                </div>
+                            </center>
+
+                        </div>
+                        <!--Appointments made for this Doctor-->
+                        <div style="margin-top:10px" class="list-group col-md-12">
+                            <a href="#" class="list-group-item list-group-item-success">
+                                <b>Appointments for Dr. {{ patients_appointments_list.doctor_name }}</b>
+                            </a>
+                            {% if patients_appointments_list.appointments_with_patient %}
+                                {% for value_appointments_patient_list in patients_appointments_list.appointments_with_patient %}
+
+                                    <li style="display:flow-root" class="list-group-item"><b>Patient Name:</b> {{ value_appointments_patient_list.patient.first_name }} {{ value_appointments_patient_list.patient.last_name }} , <b>Age:</b> {{ value_appointments_patient_list.patient.age }} &nbsp;&nbsp;&nbsp;<b>Date:</b> {{ value_appointments_patient_list.event_date }} <b>Time:</b> {{ value_appointments_patient_list.event_time }}
+                                        <form style="display:inline" action="/doctors/patient_profile">
+                                            <input type="hidden" name="pick_patient" value="{{ value_appointments_patient_list.patient.email }}" />
+                                            <button type="submit" style="float:right" class="btn btn-success btn-md">
+                                                <span class="glyphicon glyphicon-user"></span> Visit {{ value_appointments_patient_list.patient.first_name }}'s Profile
+                                            </button>
+                                        </form>
+
+                                    </li>
+
+                                {% endfor %}
+                            {% else %}
+                                <li style="display:flow-root" class="list-group-item">
+                                    <strong><center>No Appointments found</center></strong>
+                                </li>
+                            {% endif %}
+                        </div>
+
+                    </div> <!-- Ending the panel body here-->
+                </div>
+            </div>
+        </div>
+
+    {% endblock %}
+
+{% block scripts %}
+    {{ super() }}
+	<script src="//code.jquery.com/jquery-1.10.2.js"></script>
+	<script src="//code.jquery.com/ui/1.11.4/jquery-ui.js"></script>
+    <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.18.1/moment.min.js"></script>
+    <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datetimepicker/4.17.47/js/bootstrap-datetimepicker.min.js"></script>
+    <script type="text/javascript">
+      {{ datepicker.loader() }} {# to load jQuery-ui #}
+      {{ datepicker.picker(id=".dp") }}
+    </script>
+{% endblock %}
+
+  {% endblock %}
+{% endblock %}

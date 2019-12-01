@@ -1,0 +1,76 @@
+{% extends 'bootstrap/base.html' %}
+
+{% block html %}
+  {% block head %}
+    {% block title %}
+      <title>Smart Office IoT application</title>
+    {% endblock %}
+
+    {% block styles %}
+      {{ super() }}
+      <link rel="stylesheet" href="{{url_for('.static', filename='style.css')}}">
+    {% endblock %}
+  {% endblock %}
+
+  {% block body %}
+    {% block navbar %}
+      <nav class="navbar navbar-fixed-top">
+          <div class="container-fluid">
+              <div class="navbar-header">
+                  <a class="navbar-brand" href="#">Smart Office</a>
+              </div>
+              <ul class="nav navbar-nav">
+                  <li><a href="/doctors/pick_doctor">Doctors</a></li>
+                  <li><a href="/patients/pick_patient">Patients</a></li>
+                  <li><a href="/clerks/home">Clerks</a></li>
+              </ul>
+          </div>
+      </nav>
+    {% endblock %}
+
+    {% block content %}
+        <center>
+            <div class="jumbotron">
+                <h1>Smart Office</h1>
+            </div>
+            <div class="container col-md-12">
+                <div class="row">
+                  <div class="col-sm-6 col-md-4">
+                    <div class="thumbnail">
+                      <div class="caption">
+                        <h3>Patients</h3>
+                        <p>Welcome Patients!</p>
+                        <a href="/patients/pick_patient" class="btn btn-primary" role="button">Go to Patients Home</a>
+                      </div>
+                    </div>
+                  </div>
+                    <div class="col-sm-6 col-md-4">
+                    <div class="thumbnail">
+                      <div class="caption">
+                        <h3>Doctors</h3>
+                        <p>Welcome Doctors!</p>
+                        <a href="/doctors/pick_doctor" class="btn btn-primary" role="button">Go to Doctors Home</a>
+                      </div>
+                    </div>
+                  </div>
+                    <div class="col-sm-6 col-md-4">
+                    <div class="thumbnail">
+                      <div class="caption">
+                        <h3>Medical Clerks</h3>
+                        <p>Welcome Clerks!</p>
+                        <a href="/clerks/home" class="btn btn-primary" role="button">Go to Clerks Home</a>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+            </div>
+        </center>
+      
+    {% endblock %}
+
+  {% block scripts %}
+    {{ super() }}
+  {% endblock %}
+
+  {% endblock %}
+{% endblock %}

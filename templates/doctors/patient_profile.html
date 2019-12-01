@@ -1,0 +1,135 @@
+{% extends 'bootstrap/base.html' %}
+
+{% block html %}
+  {% block head %}
+    {% block title %}
+      <title>Smart Office IoT application</title>
+    {% endblock %}
+
+    {% block styles %}
+      {{ super() }}
+      <link rel="stylesheet" href="{{url_for('.static', filename='style.css')}}">
+      <link type="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datetimepicker/4.17.47/css/bootstrap-datetimepicker.min.css">
+    {% endblock %}
+  {% endblock %}
+
+  {% block body %}
+    {% block navbar %}
+      <nav class="navbar navbar-fixed-top">
+          <div class="container-fluid">
+              <div class="navbar-header">
+                  <a class="navbar-brand" href="#">Smart Office</a>
+              </div>
+              <ul class="nav navbar-nav">
+                  <li><a href="/doctors/pick_doctor">Doctors</a></li>
+                  <li><a href="/patients/pick_patient">Patients</a></li>
+                  <li><a href="/clerks/home">Clerks</a></li>
+              </ul>
+          </div>
+      </nav>
+    {% endblock %}
+
+    {% block content %}
+        <center>
+            <div class="jumbotron">
+                <h1>Smart Office</h1>
+            </div>
+        </center>
+
+        <div class="container col-md-4">
+            <ul class="list-group">
+                <li class="list-group-item active"><b>Name:</b> {{ patient_details.first_name }} {{ patient_details.last_name }}</li>
+                <li class="list-group-item"><b>Age:</b> {{ patient_details.age }}</li>
+                <li class="list-group-item"><b>Email:</b> {{ patient_details.email }}</li>
+            </ul>
+        </div>
+
+        <div class="container col-md-8">
+            <!--Add Notes here-->
+            <!--Modal for Adding Notes-->
+            <!-- Button trigger modal -->
+            <button type="button" class="btn btn-warning" data-toggle="modal" data-target="#exampleModalCenter">
+              Create Medical Record
+            </button>
+
+            <!-- Modal -->
+            <div class="modal fade" id="exampleModalCenter" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
+              <div class="modal-dialog modal-dialog-centered" role="document">
+                <div class="modal-content">
+                  <div class="modal-header">
+                    <h5 style="display:inline-block" class="modal-title" id="exampleModalLongTitle">Create Medical Record</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                      <span aria-hidden="true">&times;</span>
+                    </button>
+                  </div>
+                    <form action="/patient/create_medical_record" method="POST">
+                      <div class="modal-body">
+                            <input type="hidden" name="patient_id" value="{{ patient_details.id }}" />
+                            <textarea name="description" class="form-control" rows="3" required minlength="3"></textarea>
+                      </div>
+                      <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                        <button type="submit" class="btn btn-warning">Add Medical Record</button>
+                      </div>
+                    </form>
+                </div>
+              </div>
+            </div>
+            <!-- Notes from Doctor -->
+            <div style="margin-top:10px" class="panel panel-warning">
+              <div class="panel-heading">
+                <h3 class="panel-title">Medical Records</h3>
+              </div>
+                <ul class="list-group list-group-flush">
+                    {% if medical_records %}
+                        {% for value_medical_records in medical_records %}
+                          <li style="display:flow-root" class="list-group-item">{{ value_medical_records.description }}
+                            <a href="button" style="float:right" class="btn btn-danger btn-md" data-toggle="modal" data-target="#deleteRecord{{ value_medical_records.id }}">
+                                <span class="glyphicon glyphicon-trash"></span> Delete
+                            </a>
+
+                            <!-- Modal -->
+                            <div class="modal fade" id="deleteRecord{{ value_medical_records.id }}" tabindex="-1" role="dialog" aria-labelledby="deleteRecord{{ value_medical_records.id }}Title" aria-hidden="true">
+                              <div class="modal-dialog" role="document">
+                                <div class="modal-content">
+                                  <div class="modal-header">
+                                    <h5 style="display:inline-block" class="modal-title" id="deleteRecord{{ value_medical_records.id }}Title">Are you sure you want to delete this Record?</h5>
+                                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                      <span aria-hidden="true">&times;</span>
+                                    </button>
+                                  </div>
+                                  <div class="modal-footer">
+                                      <form action="/patient/delete_medical_record" method="POST">
+                                          <input type="hidden" name="medical_record_id" value="{{ value_medical_records.id }}" />
+                                          <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                                          <button type="submit" class="btn btn-danger">Delete Record</button>
+                                      </form>
+                                  </div>
+                                </div>
+                              </div>
+                            </div>
+
+                          </li>
+                        {% endfor %}
+                    {% else %}
+                        <li style="display:flow-root" class="list-group-item">
+                            <strong><center>No Medical Records found</center></strong>
+                        </li>
+                    {% endif %}
+                  </ul>
+            </div>
+
+        </div>
+        <!--<div class="container col-md-1">-->
+
+        <!--</div>-->
+        
+
+    {% endblock %}
+
+{% block scripts %}
+    {{ super() }}
+{% endblock %}
+
+  {% endblock %}
+{% endblock %}

@@ -1,0 +1,62 @@
+{% extends 'bootstrap/base.html' %}
+
+{% block html %}
+  {% block head %}
+    {% block title %}
+      <title>Smart Office IoT application</title>
+    {% endblock %}
+
+    {% block styles %}
+      {{ super() }}
+      <link rel="stylesheet" href="{{url_for('.static', filename='style.css')}}">
+    {% endblock %}
+  {% endblock %}
+
+  {% block body %}
+    {% block navbar %}
+      <nav class="navbar navbar-fixed-top">
+          <div class="container-fluid">
+              <div class="navbar-header">
+                  <a class="navbar-brand" href="#">Smart Office</a>
+              </div>
+              <ul class="nav navbar-nav">
+                  <li><a href="/doctors/pick_doctor">Doctors</a></li>
+                  <li><a href="/patients/pick_patient">Patients</a></li>
+                  <li><a href="/clerks/home">Clerks</a></li>
+              </ul>
+          </div>
+      </nav>
+    {% endblock %}
+
+    {% block content %}
+        <center>
+            <div class="jumbotron">
+                <h1>Smart Office</h1>
+            </div>
+        </center>
+        <center>
+            <div style="max-width:50%" class="well">
+                <center>
+                    <div class="">
+                        <form action="/doctors/dashboard">
+                            <h3 for="dtp_input1">Choose a Doctor</h3>
+                            <select class="form-control" name="pick_doctor">
+                                {% for value in result %}
+                                    <option value="{{ value.email }}">{{ value.name }}</option>
+                                {% endfor %}
+                            </select>
+                            <button style="margin-top:10px" type="submit" class="btn btn-primary">Go to Doctor's Dashboard</button>
+                        </form>
+                    </div>
+                </center>
+            </div>
+        </center>
+
+    {% endblock %}
+
+  {% block scripts %}
+    {{ super() }}
+  {% endblock %}
+
+  {% endblock %}
+{% endblock %}

@@ -1,0 +1,85 @@
+{% extends 'bootstrap/base.html' %}
+
+{% block html %}
+  {% block head %}
+    {% block title %}
+      <title>Smart Office IoT application</title>
+    {% endblock %}
+
+    {% block styles %}
+      {{ super() }}
+      <link rel="stylesheet" href="{{url_for('.static', filename='style.css')}}">
+      <link type="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datetimepicker/4.17.47/css/bootstrap-datetimepicker.min.css">
+    {% endblock %}
+  {% endblock %}
+
+  {% block body %}
+    {% block navbar %}
+      <nav class="navbar navbar-fixed-top">
+          <div class="container-fluid">
+              <div class="navbar-header">
+                  <a class="navbar-brand" href="#">Smart Office</a>
+              </div>
+              <ul class="nav navbar-nav">
+                  <li><a href="/doctors/pick_doctor">Doctors</a></li>
+                  <li><a href="/patients/pick_patient">Patients</a></li>
+                  <li><a href="/clerks/home">Clerks</a></li>
+              </ul>
+          </div>
+      </nav>
+    {% endblock %}
+
+    {% block content %}
+        <center>
+            <div class="jumbotron">
+                <h1>Smart Office</h1>
+            </div>
+        </center>
+
+        <div style="max-width:50%" class="container">
+            <div class="list-group">
+                <div class="panel panel-info">
+                    <div class="panel-heading">
+                        <h3 class="panel-title"><b>Register here</b></h3>
+                    </div>
+                    <div class="panel-body">
+                        <form action="/patients/registration" method="POST">
+                            <!-- First name, Last name, Birthday, and Gender -->
+                                <div class="form-row">
+                                    <div class="form-group col-md-4">
+                                        <label for="inputEmail4">First Name</label>
+                                    <input type="text" name="first_name" class="form-control" placeholder="First name" required>
+                                    </div>
+                                    <div class="form-group col-md-4">
+                                        <label for="inputEmail4">Last Name</label>
+                                    <input type="text" name="last_name" class="form-control" placeholder="Last name" required>
+                                    </div>
+                                    <div class="form-group col-md-4">
+                                        <label>Age</label>
+                                        <input class="form-control" name="age" id="birth_date" type="number" min="1" max="99" placeholder="Age" required>
+                                    </div>
+                                </div>
+                             <!-- Email -->
+                                <div class="form-row">
+                                    <div class="form-group col-md-12">
+                                        <label for="inputEmail4">Email</label>
+                                        <input type="email" name="patient_email"class="form-control" id="inputEmail4" placeholder="janedoe123@email.com" required>
+                                    </div>
+                                </div>
+                                <center>
+                                    <button type="submit" class="btn btn-primary">Register</button>
+                                </center>
+                            </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+    {% endblock %}
+
+{% block scripts %}
+    {{ super() }}
+{% endblock %}
+
+  {% endblock %}
+{% endblock %}

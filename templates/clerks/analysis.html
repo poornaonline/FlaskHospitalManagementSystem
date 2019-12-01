@@ -1,0 +1,140 @@
+{% extends 'bootstrap/base.html' %}
+{% block html %}
+  {% block head %}
+    {% block title %}
+      <title>Smart Office IoT application</title>
+    {% endblock %}
+
+    {% block styles %}
+      {{ super() }}
+      <link rel="stylesheet" href="{{url_for('.static', filename='style.css')}}">
+    {% endblock %}
+  {% endblock %}
+
+  {% block body %}
+    {% block navbar %}
+      <nav class="navbar navbar-fixed-top">
+          <div class="container-fluid">
+              <div class="navbar-header">
+                  <a class="navbar-brand" href="#">Smart Office</a>
+              </div>
+              <ul class="nav navbar-nav">
+                  <li><a href="/doctors/pick_doctor">Doctors</a></li>
+                  <li><a href="/patients/pick_patient">Patients</a></li>
+                  <li><a href="/clerks/home">Clerks</a></li>
+              </ul>
+          </div>
+      </nav>
+    {% endblock %}
+
+    {% block content %}
+        <center>
+            <div class="jumbotron">
+                <h1>Smart Office</h1>
+            </div>
+        </center>
+        <div class="container">
+            <center>
+                <div class="alert alert-info">
+                    <strong>ANALYSIS</strong>
+                </div>
+                <div id="container_table" style="min-width: 310px; height: 400px; margin: 0 auto"></div>
+                <div class="alert alert-warning">
+                    <h2><strong>Doctors Availability Calendar</strong></h2>
+                    <div>
+                        <iframe src="https://calendar.google.com/calendar/embed?src=vq09ifqssa80qvkj6sisdvdc4o%40group.calendar.google.com&ctz=Australia%2FMelbourne" style="border: 0" width="800" height="600" frameborder="0" scrolling="no"></iframe>
+                    </div>
+                    <div>
+                        <iframe src="https://calendar.google.com/calendar/embed?src=ovforcatonogudmjnnuqgu95ng%40group.calendar.google.com&ctz=Australia%2FMelbourne" style="border: 0" width="800" height="600" frameborder="0" scrolling="no"></iframe>
+                    </div>
+                </div>
+                <div class="alert alert-warning">
+                    <h2><strong>Doctors Appointments Calendar</strong></h2>
+                    <div>
+                        <iframe src="https://calendar.google.com/calendar/embed?src=7f86t8kb6fef5s860hku7qo8tg%40group.calendar.google.com&ctz=Australia%2FMelbourne" style="border: 0" width="800" height="600" frameborder="0" scrolling="no"></iframe>
+                    </div>
+                    <div>
+                        <iframe src="https://calendar.google.com/calendar/embed?src=jbieerrjelaqbtt85nq1pt448o%40group.calendar.google.com&ctz=Australia%2FMelbourne" style="border: 0" width="800" height="600" frameborder="0" scrolling="no"></iframe>
+                    </div>
+                </div>
+            </center>
+
+        </div>
+
+    {% endblock %}
+
+  {% block scripts %}
+    {{ super() }}
+    <script src="https://code.highcharts.com/highcharts.js"></script>
+    <script src="https://code.highcharts.com/modules/exporting.js"></script>
+    <script src="https://code.highcharts.com/modules/export-data.js"></script>
+
+    <script type="text/javascript">
+        Highcharts.chart('container_table', {
+            chart: {
+                type: 'column'
+            },
+            title: {
+                text: 'Doctors and Appointments'
+            },
+            xAxis: {
+                categories: [
+                    {% for value_doctors_and_appointments in doctors_and_appointments %}
+                        'Dr. {{ value_doctors_and_appointments.doctor_name }}',
+                    {% endfor %}
+                ],
+                crosshair: true
+            },
+            yAxis: {
+                min: 0,
+                title: {
+                    text: 'Appointments / Patients Visited'
+                }
+            },
+            tooltip: {
+                headerFormat: '<span style="font-size:10px">{point.key}</span><table>',
+                pointFormat: '<tr><td style="color:{series.color};padding:0">{series.name}: </td>' +
+            '<td style="padding:0"><b>{point.y}</b></td></tr>',
+                footerFormat: '</table>',
+                shared: true,
+                useHTML: true
+            },
+            plotOptions: {
+                column: {
+                    pointPadding: 0.2,
+                    borderWidth: 0
+                }
+            },
+            series: [
+                    {
+                        name: 'Appointments',
+                        data: [
+                        {% for doctor in doctors_and_appointments %}
+                            {% set appointments = doctor.get("appointments_with_patient") %}
+                            {{ appointments|length }},
+                        {% endfor %}
+                        ]
+                    },
+                    {
+                        name: 'Patients Visited',
+                        data: [
+
+                        {% for doctor in doctors_and_appointments %}
+                            {% set visit_count = namespace(a=0) %}
+                            {% for appointment in doctor.appointments_with_patient %}
+                                {% if appointment.patient_visited == True %}
+                                    {% set visit_count.a = visit_count.a + 1 %}
+                                {% endif %}
+                            {% endfor %}
+                            {{ visit_count.a }},
+                        {% endfor %}
+
+                        ]
+                    }
+            ]
+        });
+    </script>
+  {% endblock %}
+
+  {% endblock %}
+{% endblock %}
