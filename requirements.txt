@@ -42,7 +42,7 @@ python-crontab==2.3.4
 python-dateutil==2.7.3
 query-string==1.0.2
 request==1.0.2
-requests==2.19.1
+requests==2.20.0
 rsa==4.0
 s3transfer==0.1.13
 sense-hat==2.2.0
