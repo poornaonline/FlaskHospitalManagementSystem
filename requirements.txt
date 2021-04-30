@@ -43,7 +43,7 @@ python-dateutil==2.7.3
 query-string==1.0.2
 request==1.0.2
 requests==2.19.1
-rsa==4.0
+rsa==4.7
 s3transfer==0.1.13
 sense-hat==2.2.0
 simplejson==3.16.0
