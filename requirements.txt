@@ -51,7 +51,7 @@ six==1.11.0
 SQLAlchemy==1.2.12
 static-parameters==0.4
 uritemplate==3.0.0
-urllib3==1.23
+urllib3==1.26.5
 virtualenv==16.0.0
 visitor==0.1.3
 Werkzeug==0.14.1
