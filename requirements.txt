@@ -31,7 +31,7 @@ mysql-connector-python==8.0.12
 mysqlclient==1.3.13
 numpy==1.15.0
 oauth2client==4.1.3
-Pillow==5.2.0
+Pillow==9.0.1
 post==1.0.2
 protobuf==3.6.0
 public==1.0.3
